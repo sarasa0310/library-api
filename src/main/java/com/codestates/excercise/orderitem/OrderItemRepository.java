@@ -1,5 +1,6 @@
-package com.codestates.excercise;
+package com.codestates.excercise.orderitem;
 
+import com.codestates.excercise.order.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {

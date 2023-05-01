@@ -1,5 +1,9 @@
-package com.codestates.excercise;
+package com.codestates.excercise.order;
 
+import com.codestates.excercise.item.Item;
+import com.codestates.excercise.item.ItemRepository;
+import com.codestates.excercise.orderitem.OrderItem;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,20 +11,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ItemRepository itemRepository;
 
-    public OrderService(OrderRepository orderRepository, ItemRepository itemRepository) {
-        this.orderRepository = orderRepository;
-        this.itemRepository = itemRepository;
-    }
+    private final ItemRepository itemRepository;
 
     public Long addOrderItem(Long orderId, Long itemId, int count) {
         Order order = orderRepository.findById(orderId).orElseThrow();
         Item item = itemRepository.findById(itemId).orElseThrow();
+
         order.addOrderItem(new OrderItem(order, item, count));
+
         return order.getId();
     }
 

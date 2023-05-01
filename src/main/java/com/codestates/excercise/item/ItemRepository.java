@@ -1,4 +1,4 @@
-package com.codestates.excercise;
+package com.codestates.excercise.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

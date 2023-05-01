@@ -1,10 +1,17 @@
-package com.codestates.excercise;
+package com.codestates.excercise.orderitem;
+
+import com.codestates.excercise.item.Item;
+import com.codestates.excercise.order.Order;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class OrderItem {
 
     @Id
@@ -24,9 +31,6 @@ public class OrderItem {
 
     private int count;
 
-    public OrderItem() {
-    }
-
     public OrderItem(Order order, Item item, int count) {
         this.order = order;
         this.item = item;
@@ -34,11 +38,4 @@ public class OrderItem {
         this.count = count;
     }
 
-    public int getOrderPrice() {
-        return orderPrice;
-    }
-
-    public Item getItem() {
-        return item;
-    }
 }

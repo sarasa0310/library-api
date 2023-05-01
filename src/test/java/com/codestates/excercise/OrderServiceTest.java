@@ -1,5 +1,12 @@
 package com.codestates.excercise;
 
+import com.codestates.excercise.item.Item;
+import com.codestates.excercise.item.ItemRepository;
+import com.codestates.excercise.order.Order;
+import com.codestates.excercise.order.OrderRepository;
+import com.codestates.excercise.order.OrderService;
+import com.codestates.excercise.orderitem.OrderItem;
+import com.codestates.excercise.orderitem.OrderItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

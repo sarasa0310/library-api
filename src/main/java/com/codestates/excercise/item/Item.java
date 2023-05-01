@@ -1,8 +1,13 @@
-package com.codestates.excercise;
+package com.codestates.excercise.item;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class Item {
 
     @Id
@@ -16,26 +21,10 @@ public class Item {
 
     private int stockQuantity;
 
-    public Item() {
-    }
-
     public Item(String name, int price, int stockQuantity) {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
 
 }

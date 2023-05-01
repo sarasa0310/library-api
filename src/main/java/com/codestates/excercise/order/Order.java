@@ -1,4 +1,9 @@
-package com.codestates.excercise;
+package com.codestates.excercise.order;
+
+import com.codestates.excercise.orderitem.OrderItem;
+import com.codestates.excercise.item.Item;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +15,8 @@ import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@NoArgsConstructor
 public class Order {
 
     @Id
@@ -21,17 +28,6 @@ public class Order {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    public Order() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
 
     public List<OrderItem> getOrderItems() {
         return Collections.unmodifiableList(orderItems);
@@ -46,4 +42,5 @@ public class Order {
         order.orderItems.add(new OrderItem(order, item, count));
         return order;
     }
+
 }
