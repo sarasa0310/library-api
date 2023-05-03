@@ -17,6 +17,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
     private void verifyExistsUser(User user) {
         if (userRepository.existsByNameAndPhone(user.getName(), user.getPhone())) {
             throw new IllegalArgumentException("이미 존재하는 사용자명과 휴대전화 번호 조합입니다.");

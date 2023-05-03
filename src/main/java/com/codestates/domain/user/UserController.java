@@ -3,10 +3,7 @@ package com.codestates.domain.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +21,13 @@ public class UserController {
         User createdUser = userService.createUser(user);
 
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{user-id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId) {
+        userService.deleteUser(userId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
