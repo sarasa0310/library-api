@@ -1,7 +1,9 @@
 package com.codestates.domain.book;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -23,6 +25,20 @@ public class Book {
     @Column(nullable = false)
     private String publisher;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Setter
+    private BookStatus bookStatus = BookStatus.AVAILABLE;
+
+    @Getter
+    @AllArgsConstructor
+    public enum BookStatus {
+        AVAILABLE("대출 가능"),
+        ON_LOAN("대출 중");
+
+        private final String description;
+    }
+
     public Book(String title, String author, String publisher) {
         this.title = title;
         this.author = author;
@@ -38,5 +54,4 @@ public class Book {
                 ", publisher='" + publisher + '\'' +
                 '}';
     }
-
 }

@@ -1,10 +1,15 @@
 package com.codestates.domain.user;
 
+import com.codestates.domain.loanhistory.LoanHistory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Getter
@@ -22,6 +27,9 @@ public class User {
 
     @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
+    private int loanCount;
 
     public User(String name, String phone) {
         this.name = name;
