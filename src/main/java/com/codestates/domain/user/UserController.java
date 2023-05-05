@@ -14,13 +14,15 @@ public class UserController {
 
     private final UserMapper userMapper;
 
+    // todo : UserPostDto 유효성 검증
+
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody UserPostDto userPostDto) {
         User user = userMapper.userPostDtoToUser(userPostDto);
 
         User createdUser = userService.createUser(user);
 
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        return ResponseEntity.ok().body(createdUser);
     }
 
     @DeleteMapping("/{user-id}")
