@@ -13,5 +13,6 @@ public interface LoanHistoryRepository extends JpaRepository<LoanHistory, Long> 
 
     Optional<LoanHistory> findByBook_IdAndUser_Id(Long bookId, Long userId);
 
-    List<LoanHistory> findAllByUser(User user);
+    List<LoanHistory> findAllByUser_Id(Long userId);
+
 }

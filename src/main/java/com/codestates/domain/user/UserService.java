@@ -1,8 +1,12 @@
 package com.codestates.domain.user;
 
+import com.codestates.domain.loanhistory.LoanHistory;
+import com.codestates.domain.loanhistory.LoanHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -10,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final LoanHistoryRepository loanHistoryRepository;
 
     public User createUser(User user) {
         verifyExistsUser(user);
@@ -19,6 +25,11 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LoanHistory> getLoanHistories(Long userId) {
+        return loanHistoryRepository.findAllByUser_Id(userId);
     }
 
     private void verifyExistsUser(User user) {

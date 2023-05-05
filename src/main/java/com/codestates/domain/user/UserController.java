@@ -1,9 +1,13 @@
 package com.codestates.domain.user;
 
+import com.codestates.domain.loanhistory.LoanHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +26,9 @@ public class UserController {
 
         User createdUser = userService.createUser(user);
 
-        return ResponseEntity.ok().body(createdUser);
+        return ResponseEntity.created(
+                URI.create("/users/" + createdUser.getId()))
+                .body(createdUser);
     }
 
     @DeleteMapping("/{user-id}")
@@ -30,6 +36,13 @@ public class UserController {
         userService.deleteUser(userId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{user-id}/loan")
+    public ResponseEntity<?> getLoanHistories(@PathVariable("user-id") Long userId) {
+        List<LoanHistory> loanHistories = userService.getLoanHistories(userId);
+
+        return ResponseEntity.ok().body(loanHistories);
     }
 
 }
