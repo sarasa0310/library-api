@@ -3,8 +3,10 @@ package com.codestates.domain.user;
 import com.codestates.domain.loanhistory.LoanHistory;
 import com.codestates.domain.loanhistory.LoanHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -24,7 +26,22 @@ public class UserService {
     }
 
     public void deleteUser(Long userId) {
+        User foundUser = userRepository.findById(userId).orElseThrow();
+
+        // 대출 중인 책이 있을 경우 사용자를 삭제 할 수 없다.
+        checkOnLoan(foundUser);
+
         userRepository.deleteById(userId);
+    }
+
+    private static void checkOnLoan(User user) {
+        boolean isOnLoan = user.getLoanHistories()
+                .stream()
+                .anyMatch(loanHistory -> loanHistory.getReturnedAt() == null);
+
+        if (isOnLoan) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "대출 중인 책이 있을 경우 삭제 할 수 없습니다.");
+        }
     }
 
     @Transactional(readOnly = true)
