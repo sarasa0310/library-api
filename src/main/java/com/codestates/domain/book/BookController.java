@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -38,10 +37,10 @@ public class BookController {
                                       @RequestParam Long userId) {
         LoanHistory loanHistory = bookService.loanBook(bookId, userId);
 
-        LoanHistoryResponseDto loanHistoryResponseDto =
-                loanHistoryMapper.loanHistoryToLoanHistoryResponseDto(loanHistory);
+        LoanHistoryResponseDto loanHistoryResponse =
+                loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);
 
-        return new ResponseEntity<>(loanHistoryResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(loanHistoryResponse, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{book-id}/return")
@@ -49,10 +48,10 @@ public class BookController {
                                         @RequestParam Long userId) {
         LoanHistory loanHistory = bookService.returnBook(bookId, userId);
 
-        LoanHistoryResponseDto loanHistoryResponseDto =
-                loanHistoryMapper.loanHistoryToLoanHistoryResponseDto(loanHistory);
+        LoanHistoryResponseDto loanHistoryResponse =
+                loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);
 
-        return ResponseEntity.ok().body(loanHistoryResponseDto);
+        return ResponseEntity.ok().body(loanHistoryResponse);
     }
 
 }
