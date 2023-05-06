@@ -1,6 +1,8 @@
 package com.codestates.domain.book;
 
 import com.codestates.domain.loanhistory.LoanHistory;
+import com.codestates.domain.loanhistory.LoanHistoryMapper;
+import com.codestates.domain.loanhistory.LoanHistoryResponseDto;
 import com.codestates.pagination.MultiResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -8,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -17,6 +18,8 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+
+    private final LoanHistoryMapper loanHistoryMapper;
 
     @GetMapping
     public ResponseEntity<?> searchBook(@RequestParam(defaultValue = "1") int page,
@@ -34,7 +37,10 @@ public class BookController {
                                       @RequestParam Long userId) {
         LoanHistory loanHistory = bookService.loanBook(bookId, userId);
 
-        return new ResponseEntity<>(loanHistory, HttpStatus.CREATED);
+        LoanHistoryResponseDto loanHistoryResponse =
+                loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);
+
+        return new ResponseEntity<>(loanHistoryResponse, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{book-id}/return")
@@ -42,7 +48,10 @@ public class BookController {
                                         @RequestParam Long userId) {
         LoanHistory loanHistory = bookService.returnBook(bookId, userId);
 
-        return ResponseEntity.ok().body(loanHistory);
+        LoanHistoryResponseDto loanHistoryResponse =
+                loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);
+
+        return ResponseEntity.ok().body(loanHistoryResponse);
     }
 
 }

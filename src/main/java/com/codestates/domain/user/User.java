@@ -28,8 +28,9 @@ public class User {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
-    private int loanCount;
+    // 사용자 삭제 시 해당 사용자의 대출 기록도 삭제
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<LoanHistory> loanHistories = new ArrayList<>();
 
     public User(String name, String phone) {
         this.name = name;
