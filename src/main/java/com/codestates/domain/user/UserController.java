@@ -2,10 +2,10 @@ package com.codestates.domain.user;
 
 import com.codestates.domain.loanhistory.LoanHistory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -18,10 +18,8 @@ public class UserController {
 
     private final UserMapper userMapper;
 
-    // todo : UserPostDto 유효성 검증
-
     @PostMapping
-    public ResponseEntity<?> signUp(@RequestBody UserPostDto userPostDto) {
+    public ResponseEntity<?> signUp(@RequestBody @Valid UserPostDto userPostDto) {
         User user = userMapper.userPostDtoToUser(userPostDto);
 
         User createdUser = userService.createUser(user);
