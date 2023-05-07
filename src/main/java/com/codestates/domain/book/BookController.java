@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,9 @@ public class BookController {
         LoanHistoryResponseDto loanHistoryResponse =
                 loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);
 
-        return new ResponseEntity<>(loanHistoryResponse, HttpStatus.CREATED);
+        return ResponseEntity.created(
+                URI.create("/loanHistories/" + loanHistory.getId()))
+                .body(loanHistoryResponse);
     }
 
     @PatchMapping("/{book-id}/return")

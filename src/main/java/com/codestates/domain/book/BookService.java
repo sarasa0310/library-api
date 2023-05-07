@@ -40,11 +40,13 @@ public class BookService {
         Book book = bookRepository.findById(bookId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
 
-        // todo: 연체중인 책이 있으면 대출 불가능 추가
         // todo: Base Entity 추가
 
         // 대출은 5권까지 가능. 5권 이상 대출하려고 하는지 체크
         checkOnLoanCount(user);
+
+        // 연체중인 책이 있는지 체크
+        checkOverdue(user);
 
         // 해당 책이 대출가능한지 체크
         checkBookStatus(book);
@@ -81,6 +83,17 @@ public class BookService {
 
         if (onLoanCount >= MAX_LOAN) {
             throw new RuntimeException("대출은 5권까지 가능합니다.");
+        }
+    }
+
+    private void checkOverdue(User user) {
+        boolean isOverdue = user.getLoanHistories()
+                .stream()
+                .anyMatch(loanHistory -> loanHistory.getReturnedAt() == null && // 아직 반납하지 않았고,
+                        LocalDateTime.now().isAfter(loanHistory.getLoanedAt().plusDays(14))); // 반납기한(14일)이 지났다면
+
+        if (isOverdue) {
+            throw new RuntimeException("연체된 책이 하나라도 있으면 대출할 수 없습니다.");
         }
     }
 
