@@ -39,19 +39,13 @@ public class BookService {
     public LoanHistory loanBook(Long bookId, Long userId) {
         Book book = bookRepository.findById(bookId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
-
-        // todo: Base Entity 추가
-
-        // 대출은 5권까지 가능. 5권 이상 대출하려고 하는지 체크
-        checkOnLoanCount(user);
-
-        // 연체중인 책이 있는지 체크
-        checkOverdue(user);
-
-        // 해당 책이 대출가능한지 체크
-        checkBookStatus(book);
-
-        // 대출 중으로 변경
+        
+        verifyOnLoanCount(user);
+        
+        verifyOverdue(user);
+        
+        verifyBookStatus(book);
+        
         book.setBookStatus(Book.BookStatus.ON_LOAN);
 
         LoanHistory newLoanHistory =
@@ -68,14 +62,13 @@ public class BookService {
                 loanHistoryRepository.findByBookAndUser(book, user).orElseThrow();
 
         foundLoanHistory.setReturnedAt(LocalDateTime.now());
-
-        // 대출 가능으로 변경
+        
         book.setBookStatus(Book.BookStatus.AVAILABLE);
 
         return foundLoanHistory;
     }
 
-    private void checkOnLoanCount(User user) {
+    private void verifyOnLoanCount(User user) {
         long onLoanCount = user.getLoanHistories()
                 .stream()
                 .filter(loanHistory -> loanHistory.getReturnedAt() == null)
@@ -86,18 +79,18 @@ public class BookService {
         }
     }
 
-    private void checkOverdue(User user) {
+    private void verifyOverdue(User user) {
         boolean isOverdue = user.getLoanHistories()
                 .stream()
-                .anyMatch(loanHistory -> loanHistory.getReturnedAt() == null && // 아직 반납하지 않았고,
-                        LocalDateTime.now().isAfter(loanHistory.getLoanedAt().plusDays(14))); // 반납기한(14일)이 지났다면
+                .anyMatch(loanHistory -> loanHistory.getReturnedAt() == null &&
+                        LocalDateTime.now().isAfter(loanHistory.getLoanedAt().plusDays(14)));
 
         if (isOverdue) {
             throw new RuntimeException("연체된 책이 하나라도 있으면 대출할 수 없습니다.");
         }
     }
 
-    private void checkBookStatus(Book book) {
+    private void verifyBookStatus(Book book) {
         if (book.getBookStatus().equals(Book.BookStatus.ON_LOAN)) {
             throw new RuntimeException("해당 책은 이미 대출 중입니다.");
         }
