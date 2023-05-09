@@ -43,6 +43,11 @@ public class UserService {
         return userRepository.findByNameAndPhone(user.getName(), user.getPhone()).orElseThrow();
     }
 
+    @Transactional(readOnly = true)
+    public User findVerifiedUser(String name, String phone) {
+        return userRepository.findByNameAndPhone(name, phone).orElseThrow();
+    }
+
     private void verifyExistsUser(User user) {
         if (userRepository.existsByNameAndPhone(user.getName(), user.getPhone())) {
             throw new RuntimeException("이미 존재하는 사용자명과 휴대전화 번호 조합입니다.");

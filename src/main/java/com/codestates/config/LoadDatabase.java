@@ -50,10 +50,10 @@ public class LoadDatabase {
     }
 
     private static void initUserRepository(UserRepository userRepository) {
-        userRepository.save(new User("은지일", "010-9197-9120"));
-        userRepository.save(new User("은경혜", "010-2952-9120"));
-        userRepository.save(new User("은종욱", "010-3828-9120"));
-        userRepository.save(new User("최영주", "010-6511-9120"));
+        userRepository.save(new User("김코딩", "010-1234-5678"));
+        userRepository.save(new User("나해커", "010-1111-2222"));
+        userRepository.save(new User("박프론트", "010-9876-5432"));
+        userRepository.save(new User("최백", "010-7777-7777"));
 
         userRepository.findAll().forEach(user -> log.info("Preloaded User: " + user));
     }
