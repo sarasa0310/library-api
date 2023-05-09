@@ -18,7 +18,6 @@ public class UserService {
     private final LoanHistoryRepository loanHistoryRepository;
 
     public User createUser(User user) {
-        // 이미 존재하는 사용자명과 휴대전화 번호 조합인지 체크
         verifyExistsUser(user);
 
         return userRepository.save(user);
@@ -27,13 +26,11 @@ public class UserService {
     public void deleteUser(Long userId) {
         User foundUser = userRepository.findById(userId).orElseThrow();
 
-        // 대출 중인 책이 있을 경우 사용자를 삭제 할 수 없다.
-        checkOnLoan(foundUser);
+        verifyOnLoan(foundUser);
 
         userRepository.deleteById(userId);
     }
 
-    // todo: Optional로 감싸기
     @Transactional(readOnly = true)
     public List<LoanHistory> getLoanHistories(Long userId) {
         return loanHistoryRepository.findAllByUser_Id(userId);
@@ -45,7 +42,7 @@ public class UserService {
         }
     }
 
-    private void checkOnLoan(User user) {
+    private void verifyOnLoan(User user) {
         boolean isOnLoan = user.getLoanHistories()
                 .stream()
                 .anyMatch(loanHistory -> loanHistory.getReturnedAt() == null);

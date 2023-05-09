@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LoanHistory {
 
+    // todo: BaseEntity 추가
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
