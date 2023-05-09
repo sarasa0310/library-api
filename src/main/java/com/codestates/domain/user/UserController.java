@@ -23,28 +23,32 @@ public class UserController {
     private final LoanHistoryMapper loanHistoryMapper;
 
     @PostMapping
-    public ResponseEntity<?> signUp(@RequestBody @Valid UserPostDto userPostDto) {
-        User user = userMapper.userPostDtoToUser(userPostDto);
+    public ResponseEntity<?> signUp(@RequestBody @Valid UserRequestDto userRequestDto) {
+        User user = userMapper.userRequestDtoToUser(userRequestDto);
 
         User createdUser = userService.createUser(user);
 
-        // todo: userResponseDto 추가
+        UserResponseDto userResponse = userMapper.userToUserResponseDto(createdUser);
 
         return ResponseEntity.created(
                 URI.create("/users/" + createdUser.getId()))
-                .body(createdUser);
+                .body(userResponse);
     }
 
-    @DeleteMapping("/{user-id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId) {
-        userService.deleteUser(userId);
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@RequestBody @Valid UserRequestDto userRequestDto) {
+        User user = userMapper.userRequestDtoToUser(userRequestDto);
+
+        userService.deleteUser(user);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{user-id}/loan")
-    public ResponseEntity<?> getLoanHistories(@PathVariable("user-id") Long userId) {
-        List<LoanHistory> loanHistories = userService.getLoanHistories(userId);
+    @GetMapping("/loan")
+    public ResponseEntity<?> getLoanHistories(@RequestBody @Valid UserRequestDto userRequestDto) {
+        User user = userMapper.userRequestDtoToUser(userRequestDto);
+
+        List<LoanHistory> loanHistories = userService.getLoanHistories(user);
 
         List<LoanHistoryResponseDto> loanHistoryResponses =
                 loanHistoryMapper.loanHistoriesToLoanHistoryResponses(loanHistories);

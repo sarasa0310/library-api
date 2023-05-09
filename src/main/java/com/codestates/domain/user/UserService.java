@@ -23,17 +23,24 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long userId) {
-        User foundUser = userRepository.findById(userId).orElseThrow();
+    public void deleteUser(User user) {
+        User foundUser = findVerifiedUser(user);
 
         verifyOnLoan(foundUser);
 
-        userRepository.deleteById(userId);
+        userRepository.delete(foundUser);
     }
 
     @Transactional(readOnly = true)
-    public List<LoanHistory> getLoanHistories(Long userId) {
-        return loanHistoryRepository.findAllByUser_Id(userId);
+    public List<LoanHistory> getLoanHistories(User user) {
+        User foundUser = findVerifiedUser(user);
+
+        return loanHistoryRepository.findAllByUser(foundUser);
+    }
+
+    @Transactional(readOnly = true)
+    public User findVerifiedUser(User user) {
+        return userRepository.findByNameAndPhone(user.getName(), user.getPhone()).orElseThrow();
     }
 
     private void verifyExistsUser(User user) {
