@@ -38,10 +38,7 @@ public class BookService {
 
     public LoanHistory loanBook(LoanDto loanDto) {
         Book book = bookRepository.findByTitle(loanDto.getTitle()).orElseThrow();
-        User user = userService.findVerifiedUser(
-                loanDto.getUserInfo().getName(),
-                loanDto.getUserInfo().getPhone()
-        );
+        User user = userService.findVerifiedUser(loanDto.getName(), loanDto.getPhone());
 
         verifyOnLoanCount(user);
         
@@ -59,10 +56,7 @@ public class BookService {
 
     public LoanHistory returnBook(LoanDto loanDto) {
         Book book = bookRepository.findByTitle(loanDto.getTitle()).orElseThrow();
-        User user = userService.findVerifiedUser(
-                loanDto.getUserInfo().getName(),
-                loanDto.getUserInfo().getPhone()
-        );
+        User user = userService.findVerifiedUser(loanDto.getName(), loanDto.getPhone());
 
         LoanHistory foundLoanHistory =
                 loanHistoryRepository.findByBookAndUser(book, user).orElseThrow();
