@@ -6,10 +6,10 @@ import com.codestates.domain.loanhistory.LoanHistoryResponseDto;
 import com.codestates.pagination.MultiResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -33,10 +33,9 @@ public class BookController {
         return ResponseEntity.ok().body(new MultiResponseDto<>(books, bookPage));
     }
 
-    @PostMapping("/{book-id}/loan")
-    public ResponseEntity<?> loanBook(@PathVariable("book-id") Long bookId,
-                                      @RequestParam Long userId) {
-        LoanHistory loanHistory = bookService.loanBook(bookId, userId);
+    @PostMapping("/loan")
+    public ResponseEntity<?> loanBook(@RequestBody @Valid LoanDto loanDto) {
+        LoanHistory loanHistory = bookService.loanBook(loanDto);
 
         LoanHistoryResponseDto loanHistoryResponse =
                 loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);
@@ -46,10 +45,9 @@ public class BookController {
                 .body(loanHistoryResponse);
     }
 
-    @PatchMapping("/{book-id}/return")
-    public ResponseEntity<?> returnBook(@PathVariable("book-id") Long bookId,
-                                        @RequestParam Long userId) {
-        LoanHistory loanHistory = bookService.returnBook(bookId, userId);
+    @PatchMapping("/return")
+    public ResponseEntity<?> returnBook(@RequestBody @Valid LoanDto loanDto) {
+        LoanHistory loanHistory = bookService.returnBook(loanDto);
 
         LoanHistoryResponseDto loanHistoryResponse =
                 loanHistoryMapper.loanHistoryToLoanHistoryResponse(loanHistory);

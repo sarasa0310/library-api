@@ -3,7 +3,7 @@ package com.codestates.domain.book;
 import com.codestates.domain.loanhistory.LoanHistory;
 import com.codestates.domain.loanhistory.LoanHistoryRepository;
 import com.codestates.domain.user.User;
-import com.codestates.domain.user.UserRepository;
+import com.codestates.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +21,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final LoanHistoryRepository loanHistoryRepository;
 
@@ -36,10 +36,10 @@ public class BookService {
         return bookRepository.findAll(PageRequest.of(page, size, Sort.by("title")));
     }
 
-    public LoanHistory loanBook(Long bookId, Long userId) {
-        Book book = bookRepository.findById(bookId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
-        
+    public LoanHistory loanBook(LoanDto loanDto) {
+        Book book = bookRepository.findByTitle(loanDto.getTitle()).orElseThrow();
+        User user = userService.findVerifiedUser(loanDto.getName(), loanDto.getPhone());
+
         verifyOnLoanCount(user);
         
         verifyOverdue(user);
@@ -54,9 +54,9 @@ public class BookService {
         return loanHistoryRepository.save(newLoanHistory);
     }
 
-    public LoanHistory returnBook(Long bookId, Long userId) {
-        Book book = bookRepository.findById(bookId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+    public LoanHistory returnBook(LoanDto loanDto) {
+        Book book = bookRepository.findByTitle(loanDto.getTitle()).orElseThrow();
+        User user = userService.findVerifiedUser(loanDto.getName(), loanDto.getPhone());
 
         LoanHistory foundLoanHistory =
                 loanHistoryRepository.findByBookAndUser(book, user).orElseThrow();
