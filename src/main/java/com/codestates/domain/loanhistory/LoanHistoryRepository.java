@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface LoanHistoryRepository extends JpaRepository<LoanHistory, Long> {
 
-    Optional<LoanHistory> findByBookAndUser(Book book, User user);
+    Optional<LoanHistory> findByBookAndUserAndReturnedAtNull(Book book, User user);
 
     List<LoanHistory> findAllByUser(User user);
 
