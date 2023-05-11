@@ -2,6 +2,8 @@ package com.codestates.domain.user;
 
 import com.codestates.domain.loanhistory.LoanHistory;
 import com.codestates.domain.loanhistory.LoanHistoryRepository;
+import com.codestates.exception.BusinessLogicException;
+import com.codestates.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,17 +42,19 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findVerifiedUser(User user) {
-        return userRepository.findByNameAndPhone(user.getName(), user.getPhone()).orElseThrow();
+        return userRepository.findByNameAndPhone(user.getName(), user.getPhone())
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public User findVerifiedUser(String name, String phone) {
-        return userRepository.findByNameAndPhone(name, phone).orElseThrow();
+        return userRepository.findByNameAndPhone(name, phone)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     private void verifyExistsUser(User user) {
         if (userRepository.existsByNameAndPhone(user.getName(), user.getPhone())) {
-            throw new RuntimeException("이미 존재하는 사용자명과 휴대전화 번호 조합입니다.");
+            throw new BusinessLogicException(ExceptionCode.USER_ALREADY_EXIST);
         }
     }
 
@@ -60,7 +64,7 @@ public class UserService {
                 .anyMatch(loanHistory -> loanHistory.getReturnedAt() == null);
 
         if (isOnLoan) {
-            throw new RuntimeException("대출 중인 책이 있을 경우 삭제 할 수 없습니다.");
+            throw new BusinessLogicException(ExceptionCode.ON_LOAN);
         }
     }
 

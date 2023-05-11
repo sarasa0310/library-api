@@ -4,6 +4,8 @@ import com.codestates.domain.loanhistory.LoanHistory;
 import com.codestates.domain.loanhistory.LoanHistoryRepository;
 import com.codestates.domain.user.User;
 import com.codestates.domain.user.UserService;
+import com.codestates.exception.BusinessLogicException;
+import com.codestates.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +39,7 @@ public class BookService {
     }
 
     public LoanHistory loanBook(LoanDto loanDto) {
-        Book book = bookRepository.findByTitle(loanDto.getTitle()).orElseThrow();
+        Book book = findVerifiedBook(loanDto.getTitle());
         User user = userService.findVerifiedUser(loanDto.getName(), loanDto.getPhone());
 
         verifyOnLoanCount(user);
@@ -55,17 +57,26 @@ public class BookService {
     }
 
     public LoanHistory returnBook(LoanDto loanDto) {
-        Book book = bookRepository.findByTitle(loanDto.getTitle()).orElseThrow();
+        Book book = findVerifiedBook(loanDto.getTitle());
         User user = userService.findVerifiedUser(loanDto.getName(), loanDto.getPhone());
 
-        LoanHistory foundLoanHistory =
-                loanHistoryRepository.findByBookAndUser(book, user).orElseThrow();
+        LoanHistory foundLoanHistory = findVerifiedLoanHistory(book, user);
 
         foundLoanHistory.setReturnedAt(LocalDateTime.now());
         
         book.setBookStatus(Book.BookStatus.AVAILABLE);
 
         return foundLoanHistory;
+    }
+
+    private Book findVerifiedBook(String title) {
+        return bookRepository.findByTitle(title)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOOK_NOT_FOUND));
+    }
+
+    private LoanHistory findVerifiedLoanHistory(Book book, User user) {
+        return loanHistoryRepository.findByBookAndUser(book, user)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.LOAN_HISTORY_NOT_FOUND));
     }
 
     private void verifyOnLoanCount(User user) {
@@ -75,7 +86,7 @@ public class BookService {
                 .count();
 
         if (onLoanCount >= MAX_LOAN) {
-            throw new RuntimeException("대출은 5권까지 가능합니다.");
+            throw new BusinessLogicException(ExceptionCode.MAX_LOAN_EXCEEDED);
         }
     }
 
@@ -86,13 +97,13 @@ public class BookService {
                         LocalDateTime.now().isAfter(loanHistory.getLoanedAt().plusDays(14)));
 
         if (isOverdue) {
-            throw new RuntimeException("연체된 책이 하나라도 있으면 대출할 수 없습니다.");
+            throw new BusinessLogicException(ExceptionCode.OVERDUE);
         }
     }
 
     private void verifyBookStatus(Book book) {
         if (book.getBookStatus().equals(Book.BookStatus.ON_LOAN)) {
-            throw new RuntimeException("해당 책은 이미 대출 중입니다.");
+            throw new BusinessLogicException(ExceptionCode.ALREADY_ON_LOAN);
         }
     }
 
