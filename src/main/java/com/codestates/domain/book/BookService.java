@@ -75,7 +75,7 @@ public class BookService {
     }
 
     private LoanHistory findVerifiedLoanHistory(Book book, User user) {
-        return loanHistoryRepository.findByBookAndUser(book, user)
+        return loanHistoryRepository.findByBookAndUserAndReturnedAtNull(book, user)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.LOAN_HISTORY_NOT_FOUND));
     }
 
