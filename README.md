@@ -1,15 +1,21 @@
 # 도서 관리 API 프로젝트
 
+<br/>
+
 ### 개요
 - 하나의 도서관을 가정해 대출 - 반납 서비스를 구현한 미니 프로젝트입니다.
 - Java와 Spring Boot를 기반으로 하고 있습니다.
 - AWS Elastic Beanstalk로 애플리케이션을 배포하였습니다.
+
+<br/>
 
 ### 주요 기능
 1. 도서관이 보유하고 있는 책을 검색할 수 있습니다. 제목을 기준으로 찾을 수도 있어요!
 2. 책을 대출하고 반납할 수 있습니다. 대출기한은 14일이고, 5권까지 빌릴 수 있어요.
 3. 대출을 하려면 사용자로 가입해야 해요. 탈퇴도 가능합니다.
 4. 자신의 대출 기록도 조회할 수 있어요.
+
+<br/>
 
 ### API 엔드포인트
 **1. 도서 검색**
@@ -30,13 +36,21 @@
 **6. 대출 기록 조회**
 - GET http://library.ap-northeast-2.elasticbeanstalk.com/users/loan
 
+<br/>
+
 ### API 문서
 https://documenter.getpostman.com/view/24688565/2s93ebSW33
+
+<br/>
 
 ### 사용자 요구사항 정의서
 https://docs.google.com/spreadsheets/d/103K7Lyva38m-eWdB-7JWMkELyaF2ZrAYLxDYCeysfi4/edit?usp=sharing
 
+<br/>
+
 ### ERD
+
+<br/>
 
 ### 커밋 컨벤션
 |  Message  | 	설명                           |
